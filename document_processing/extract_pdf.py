@@ -1,14 +1,22 @@
-"""Print text from the first two pages of the insurance PDF for inspection."""
+"""Save the insurance PDF's text as one JSON record per page."""
 
+import json
 from pathlib import Path
 
 import pymupdf
 
 
-pdf_path = Path(__file__).resolve().parent.parent / "Insurance_Document.pdf"
+document_dir = Path(__file__).resolve().parent
+pdf_path = document_dir / "Insurance_Document.pdf"
+output_path = document_dir / "extracted_pages.jsonl"
 
-with pymupdf.open(pdf_path) as document:
-    for page_index in range(min(2, len(document))):
-        page = document[page_index]
-        print(f"\n--- PDF page {page_index + 1} ---")
-        print(page.get_text("text"))
+with pymupdf.open(pdf_path) as document, output_path.open("w", encoding="utf-8") as output:
+    for pdf_page, page in enumerate(document, start=1):
+        record = {
+            "source": pdf_path.name,
+            "pdf_page": pdf_page,
+            "text": page.get_text("text"),
+        }
+        output.write(json.dumps(record, ensure_ascii=False) + "\n")
+
+    print(f"Saved {len(document)} pages to {output_path}")
