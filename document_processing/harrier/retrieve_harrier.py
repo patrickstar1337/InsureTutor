@@ -1,10 +1,10 @@
 """Inspect Harrier's five closest insurance passages for a question.
 
 Run interactively:
-    .venv/bin/python document_processing/retrieve_harrier.py
+    .venv/bin/python document_processing/harrier/retrieve_harrier.py
 
 Or ask one question:
-    .venv/bin/python document_processing/retrieve_harrier.py "What is the guaranteed rate?"
+    .venv/bin/python document_processing/harrier/retrieve_harrier.py "What is the guaranteed rate?"
 """
 
 import argparse

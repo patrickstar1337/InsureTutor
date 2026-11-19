@@ -1,7 +1,7 @@
 """Embed the Markdown chunks with Harrier and save their row mapping.
 
 Run from the repository root with:
-    .venv/bin/python document_processing/embed_harrier.py
+    .venv/bin/python document_processing/harrier/embed_harrier.py
 
 Document chunks are embedded as plain text. Harrier's query instruction is
 only needed later, when embedding a user's search question.

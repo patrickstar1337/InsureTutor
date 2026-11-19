@@ -1,7 +1,7 @@
 """Make page-cited, token-sized chunks from the LlamaParse Markdown export.
 
 Run from the repository root with:
-    .venv/bin/python document_processing/chunk_markdown.py
+    .venv/bin/python document_processing/harrier/chunk_markdown.py
 
 This is a separate experiment from the existing E5/PyMuPDF pipeline. It only
 creates chunks; it does not download the Harrier model weights or embed text.
@@ -24,7 +24,7 @@ MIN_SECTION_CHUNK_TOKENS = 450
 OVERLAP_TOKENS = 100
 SOURCE_PDF = "Insurance_Document.pdf"
 document_dir = Path(__file__).resolve().parent
-input_path = document_dir / "Insurance_Document.md"
+input_path = document_dir.parent / "Insurance_Document.md"
 output_path = document_dir / "harrier_chunks.jsonl"
 
 # The cover has no printed page number. This verified line starts PDF page 2.
