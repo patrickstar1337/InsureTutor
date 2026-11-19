@@ -1,0 +1,78 @@
+{
+  "source_pdf": "Insurance_Document.pdf",
+  "page_numbering": "1-based PDF pages, not the page numbers printed in the brochure",
+  "cases": [
+    {
+      "id": "guaranteed_interest_rate",
+      "question_en": "What long-term guaranteed interest rate does the brochure state?",
+      "answer_en": "The brochure states a 2.5% long-term guaranteed interest rate.",
+      "question_zh_hant": "產品冊子列出的長線利率保證是多少？",
+      "answer_zh_hant": "產品冊子列出的長線利率保證為2.5%。",
+      "answerable": true,
+      "pdf_pages": [5]
+    },
+    {
+      "id": "unemployment_grace_period",
+      "question_en": "If the policy owner is made redundant, how long can premium payments be suspended, and does coverage continue?",
+      "answer_en": "The brochure describes an option to suspend premium payments for 365 days under a Special Grace Period while remaining fully covered. Its footnote says Unemployment Protection applies only to the Basic Plan.",
+      "question_zh_hant": "若保單持有人遭裁員或遣散，可暫停繳付保費多久？保障會否繼續？",
+      "answer_zh_hant": "產品冊子指可選擇暫停繳付保費365日，在「特惠寬限期」內仍享有十足保障。附註指出，失業保障只適用於基本計劃。",
+      "answerable": true,
+      "pdf_pages": [11, 12]
+    },
+    {
+      "id": "periodic_withdrawal_eligibility",
+      "question_en": "When is the automatic periodic withdrawal option available, and is its withdrawal charge waived?",
+      "answer_en": "It is available only after the policy has been in force for at least 10 years. The withdrawal charge for this option is waived.",
+      "question_zh_hant": "定期提款權益在保單生效多久後適用？提款費用會否獲豁免？",
+      "answer_zh_hant": "定期提款權益只適用於生效滿10年或以上的保單，而這項權益的提款費用可獲豁免。",
+      "answerable": true,
+      "pdf_pages": [12]
+    },
+    {
+      "id": "terminal_illness_definition_and_payout",
+      "question_en": "How does the brochure define terminal illness, and what happens to the related policies after the benefit is paid?",
+      "answer_en": "Terminal illness means a disease that, in the opinion of the insurer's appointed medical consultant, is likely to lead to the insured's death within 12 months. After the Terminal Illness Benefit is paid, the related policies and attached supplementary benefits terminate automatically. The brochure refers readers to the policy document for the full terms.",
+      "question_zh_hant": "產品冊子如何界定末期病症？支付末期病症保障賠償後，有關保單會怎樣？",
+      "answer_zh_hant": "末期病症是指按保險公司委任的醫療顧問意見，受保人因患病而很可能在12個月內身故。支付末期病症保障賠償後，有關保單及所附加的保障會自動終止。完整條款須參閱保單文件。",
+      "answerable": true,
+      "pdf_pages": [12]
+    },
+    {
+      "id": "suicide_within_first_year",
+      "question_en": "What does the brochure say about the insurer's liability if the insured dies by suicide within one year of the policy date?",
+      "answer_en": "The insurer's total liability is limited to the account value on the insured's date of death plus the cost of insurance deducted, without interest. The brochure applies this rule whether the insured was sane or insane.",
+      "question_zh_hant": "若受保人在保單日期起計一年內自殺，產品冊子如何說明保險公司的責任？",
+      "answer_zh_hant": "無論受保人當時是否神智清醒，保險公司的全部責任只限於受保人身故當日的賬戶價值，加上已扣除的保險成本，且不包括利息。",
+      "answerable": true,
+      "pdf_pages": [14]
+    },
+    {
+      "id": "early_surrender_risk",
+      "question_en": "Could I receive less than the premiums I paid if I surrender the policy early?",
+      "answer_en": "Yes. The brochure warns that early termination may result in a cash value considerably less than the total premiums paid.",
+      "question_zh_hant": "如果提早退保，所得金額會否少於已繳保費？",
+      "answer_zh_hant": "會有這個可能。產品冊子提醒，提早終止保單所得的現金價值或會遠低於已繳保費總額。",
+      "answerable": true,
+      "pdf_pages": [14]
+    },
+    {
+      "id": "cooling_off_cancellation",
+      "question_en": "When must a cooling-off cancellation request be received, and what refund does the brochure describe?",
+      "answer_en": "The insurer must receive a signed cancellation letter and the returned policy within 21 calendar days after delivery of the policy or the notice that it is available for collection to the policy owner or representative, whichever is earlier. It says paid premiums and the levy (for Hong Kong only) will be refunded without interest. No refund can be made if a benefit payment has been made, is to be made, or is impending.",
+      "question_zh_hant": "冷靜期內的取消保單要求須何時送達？產品冊子說明可獲甚麼退款？",
+      "answer_zh_hant": "保險公司須於保單交付後，或告知保單可供領取的《通知書》交付予保單持有人或其代表後起計的21個曆日內（以較早者為準），收到已簽署的書面取消要求及退回的保單。產品冊子指已繳保費及適用於香港的徵費可獲退還，但不計利息；如保障賠償已作出、將作出或即將作出，則不予退款。",
+      "answerable": true,
+      "pdf_pages": [15]
+    },
+    {
+      "id": "unsupported_dental_limit",
+      "question_en": "What is the outpatient dental coverage limit under this plan?",
+      "answer_en": "The supplied brochure does not state an outpatient dental coverage limit, so this cannot be determined from it.",
+      "question_zh_hant": "這個計劃的門診牙科保障限額是多少？",
+      "answer_zh_hant": "所提供的產品冊子沒有列出門診牙科保障限額，因此無法根據這份文件確定。",
+      "answerable": false,
+      "pdf_pages": []
+    }
+  ]
+}
