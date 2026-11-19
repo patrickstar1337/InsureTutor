@@ -17,6 +17,7 @@ from transformers import AutoTokenizer
 
 
 MODEL_NAME = "microsoft/harrier-oss-v1-270m"
+MODEL_REVISION = "31de22b673913c7d658c0f03f792d77c2dcf8ebd"
 MAX_CHUNK_TOKENS = 800
 MAX_BLOCK_TOKENS = 650
 MIN_SECTION_CHUNK_TOKENS = 450
@@ -249,7 +250,7 @@ def make_chunks(blocks: list[dict], count_tokens) -> list[dict]:
 
 
 def main() -> None:
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, revision=MODEL_REVISION)
 
     def count_tokens(text: str) -> int:
         return len(tokenizer.encode(text, add_special_tokens=True, truncation=False))

@@ -1,0 +1,32 @@
+{
+  "model_id": "microsoft/harrier-oss-v1-270m",
+  "model_revision": "31de22b673913c7d658c0f03f792d77c2dcf8ebd",
+  "embedding_dim": 640,
+  "normalized": true,
+  "chunks_sha256": "c6e8c0c3b0c0925981fed4a13981d305ec40be24eb7d2bad0806e361f765fe9b",
+  "chunk_ids": [
+    "Insurance_Document:harrier:c001",
+    "Insurance_Document:harrier:c002",
+    "Insurance_Document:harrier:c003",
+    "Insurance_Document:harrier:c004",
+    "Insurance_Document:harrier:c005",
+    "Insurance_Document:harrier:c006",
+    "Insurance_Document:harrier:c007",
+    "Insurance_Document:harrier:c008",
+    "Insurance_Document:harrier:c009",
+    "Insurance_Document:harrier:c010",
+    "Insurance_Document:harrier:c011",
+    "Insurance_Document:harrier:c012",
+    "Insurance_Document:harrier:c013",
+    "Insurance_Document:harrier:c014",
+    "Insurance_Document:harrier:c015",
+    "Insurance_Document:harrier:c016",
+    "Insurance_Document:harrier:c017",
+    "Insurance_Document:harrier:c018",
+    "Insurance_Document:harrier:c019",
+    "Insurance_Document:harrier:c020",
+    "Insurance_Document:harrier:c021",
+    "Insurance_Document:harrier:c022",
+    "Insurance_Document:harrier:c023"
+  ]
+}
