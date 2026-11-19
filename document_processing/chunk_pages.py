@@ -3,13 +3,26 @@
 import json
 from pathlib import Path
 
+from transformers import AutoTokenizer
 
-CHUNK_SIZE = 1000
-OVERLAP_SIZE = 150
-MIN_LAST_CHUNK_SIZE = 300
+
+MODEL_NAME = "intfloat/multilingual-e5-small"
+CHUNK_TOKENS = 450
+OVERLAP_TOKENS = 50
+MIN_LAST_CHUNK_TOKENS = 100
 document_dir = Path(__file__).resolve().parent
 input_path = document_dir / "extracted_pages.jsonl"
 output_path = document_dir / "chunks.jsonl"
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+
+
+def token_count(lines: list[str]) -> int:
+    passage = "passage: " + "\n".join(lines)
+    return len(
+        tokenizer.encode(
+            passage, add_special_tokens=True, truncation=False, verbose=False
+        )
+    )
 
 
 def chunk_page(text: str) -> list[str]:
@@ -23,36 +36,28 @@ def chunk_page(text: str) -> list[str]:
     start = 0
 
     while start < len(lines):
-        end = start
-        length = 0
-        while end < len(lines):
-            added_length = len(lines[end]) + (1 if end > start else 0)
-            if end > start and length + added_length > CHUNK_SIZE:
-                break
-            length += added_length
+        end = start + 1
+        if token_count(lines[start:end]) > CHUNK_TOKENS:
+            raise ValueError(f"One extracted line exceeds {CHUNK_TOKENS} tokens.")
+        while end < len(lines) and token_count(lines[start : end + 1]) <= CHUNK_TOKENS:
             end += 1
 
         # Move a few lines into the final chunk instead of leaving a tiny tail.
         if end < len(lines):
-            remaining_length = len("\n".join(lines[end:]))
-            while remaining_length < MIN_LAST_CHUNK_SIZE and end > start + 1:
+            while end > start + 1 and token_count(lines[end:]) < MIN_LAST_CHUNK_TOKENS:
                 end -= 1
-                remaining_length = len("\n".join(lines[end:]))
 
         chunks.append("\n".join(lines[start:end]))
         if end == len(lines):
             break
 
-        # Repeat a few complete lines, while always advancing on the next pass.
+        # Repeat up to 50 tokens of complete lines, while still advancing.
         next_start = end
-        overlap_length = 0
-        while next_start > start + 1:
-            previous_line = lines[next_start - 1]
-            added_length = len(previous_line) + (1 if overlap_length else 0)
-            if overlap_length + added_length > OVERLAP_SIZE:
-                break
+        while (
+            next_start > start + 1
+            and token_count(lines[next_start - 1 : end]) <= OVERLAP_TOKENS
+        ):
             next_start -= 1
-            overlap_length += added_length
         start = next_start
 
     return chunks
