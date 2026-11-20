@@ -5,21 +5,28 @@ Run from the repository root:
 """
 
 from contextlib import asynccontextmanager
+from typing import Literal
 
 from fastapi import FastAPI, HTTPException, Request
 from openai import OpenAI, OpenAIError
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from document_processing.harrier.retrieve_harrier import (
     load_index,
     load_model,
     retrieve_results,
 )
-from rag_answer import generate_answer, load_llm_settings
+from rag_answer import generate_answer, load_llm_settings, rewrite_question
+
+
+class ChatTurn(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str = Field(min_length=1, max_length=4000)
 
 
 class ChatRequest(BaseModel):
-    question: str
+    question: str = Field(max_length=4000)
+    history: list[ChatTurn] = Field(default_factory=list, max_length=4)
 
 
 class Source(BaseModel):
@@ -57,11 +64,18 @@ def chat(body: ChatRequest, request: Request):
     question = body.question.strip()
     if not question:
         raise HTTPException(status_code=400, detail="Question must not be empty.")
+    if len(body.history) % 2 or any(
+        turn.role != ("user" if index % 2 == 0 else "assistant")
+        for index, turn in enumerate(body.history)
+    ):
+        raise HTTPException(status_code=422, detail="History must contain completed user/assistant pairs.")
 
     model, embeddings, chunk_ids, chunks_by_id, client, model_name = request.app.state.rag
+    history = [turn.model_dump() for turn in body.history]
     try:
-        passages = retrieve_results(question, model, embeddings, chunk_ids, chunks_by_id)
-        answer = generate_answer(question, passages, client, model_name)
+        search_question = rewrite_question(question, history, client, model_name)
+        passages = retrieve_results(search_question, model, embeddings, chunk_ids, chunks_by_id)
+        answer = generate_answer(question, passages, client, model_name, history)
     except ValueError as error:
         raise HTTPException(status_code=422, detail=str(error)) from error
     except OpenAIError as error:

@@ -89,9 +89,28 @@ Open the local URL printed by Vite (usually `http://localhost:5173`). Vite
 proxies `/api` to FastAPI, so the browser never receives the LLM API key.
 FastAPI loads the Harrier model and saved index once at startup.
 
-The page calls `POST /api/chat` with `{"question": "..."}`. The response has
-`answer` and `sources`; each source has the PDF filename, PDF page numbers, and
-chunk ID. The page shows previous messages, but each request is still answered
-independently. It labels the source list as retrieved passages because claim-level
-citations have not been verified yet. A failed request leaves the question in
-the text box for retry.
+The page calls `POST /api/chat` with the current `question` and up to two prior
+completed exchanges in `history`, for example:
+
+```json
+{
+  "question": "Is that guaranteed for life?",
+  "history": [
+    {"role": "user", "content": "What is the guaranteed interest rate?"},
+    {"role": "assistant", "content": "The brochure states 2.5%."}
+  ]
+}
+```
+
+The backend asks the LLM to turn a follow-up into a standalone search question,
+retrieves Harrier passages with that question, then asks the LLM to answer the
+original question using the passages. Earlier answers provide context only; the
+brochure passages are the evidence. The first question uses one LLM call, while
+later questions normally use two, plus any retries after errors. The history
+window is limited to two exchanges and resets when the page reloads. The CLI
+above still answers each question independently.
+
+The response has `answer` and `sources`; each source has the PDF filename, PDF
+page numbers, and chunk ID. The page labels these as retrieved passages because
+claim-level citations have not been verified yet. A failed request leaves the
+question in the text box for retry.

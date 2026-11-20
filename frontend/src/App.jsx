@@ -51,7 +51,10 @@ function App() {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question }),
+        body: JSON.stringify({
+          question,
+          history: messages.slice(-4).map(({ role, content }) => ({ role, content })),
+        }),
       })
       const data = await response.json().catch(() => ({}))
       if (!response.ok) {
@@ -156,7 +159,7 @@ function App() {
                 {busy ? 'Working…' : 'Send'}
               </button>
             </form>
-            <p className="composer-note">Each question is answered independently for now. Check the policy document for full terms.</p>
+            <p className="composer-note">Follow-up questions use recent chat for context. Check the policy document for full terms.</p>
           </div>
         </section>
       </main>
