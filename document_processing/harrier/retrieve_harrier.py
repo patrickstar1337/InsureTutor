@@ -52,7 +52,18 @@ def load_index():
     return embeddings, chunk_ids, chunks_by_id, manifest
 
 
-def show_results(question, model, embeddings, chunk_ids, chunks_by_id):
+def load_model(manifest, embedding_dim):
+    model = SentenceTransformer(
+        manifest["model_id"],
+        revision=manifest["model_revision"],
+        model_kwargs={"dtype": torch.float32},
+    )
+    if model.get_embedding_dimension() != embedding_dim:
+        raise ValueError("Harrier model dimension differs from the saved index.")
+    return model
+
+
+def retrieve_results(question, model, embeddings, chunk_ids, chunks_by_id):
     prompt = model.prompts.get(PROMPT_NAME)
     if prompt is None:
         raise ValueError(f"Harrier does not provide the {PROMPT_NAME!r} prompt.")
@@ -62,8 +73,7 @@ def show_results(question, model, embeddings, chunk_ids, chunks_by_id):
         )
     )
     if token_count > model.max_seq_length:
-        print(f"Question exceeds Harrier's {model.max_seq_length}-token limit.")
-        return
+        raise ValueError(f"Question exceeds Harrier's {model.max_seq_length}-token limit.")
 
     query_vector = np.asarray(
         model.encode(question, prompt_name=PROMPT_NAME, normalize_embeddings=True),
@@ -79,11 +89,23 @@ def show_results(question, model, embeddings, chunk_ids, chunks_by_id):
     # Both sides are unit vectors, so their dot product is cosine similarity.
     scores = embeddings @ query_vector
     best_rows = np.argsort(scores)[::-1][:TOP_K]
-    for rank, row in enumerate(best_rows, start=1):
-        chunk = chunks_by_id[chunk_ids[row]]
+    return [
+        {**chunks_by_id[chunk_ids[row]], "score": float(scores[row])}
+        for row in best_rows
+    ]
+
+
+def show_results(question, model, embeddings, chunk_ids, chunks_by_id):
+    try:
+        results = retrieve_results(question, model, embeddings, chunk_ids, chunks_by_id)
+    except ValueError as error:
+        print(error)
+        return
+
+    for rank, chunk in enumerate(results, start=1):
         pages = ", ".join(str(page) for page in chunk["pdf_pages"])
         print(
-            f"\n{rank}. score={scores[row]:.3f} | {chunk['chunk_id']} | "
+            f"\n{rank}. score={chunk['score']:.3f} | {chunk['chunk_id']} | "
             f"{chunk['source']} PDF pages {pages}"
         )
         print(chunk["text"])
@@ -95,13 +117,7 @@ def main():
     args = parser.parse_args()
 
     embeddings, chunk_ids, chunks_by_id, manifest = load_index()
-    model = SentenceTransformer(
-        manifest["model_id"],
-        revision=manifest["model_revision"],
-        model_kwargs={"dtype": torch.float32},
-    )
-    if model.get_embedding_dimension() != embeddings.shape[1]:
-        raise ValueError("Harrier model dimension differs from the saved index.")
+    model = load_model(manifest, embeddings.shape[1])
 
     if args.question is not None:
         question = args.question.strip()
