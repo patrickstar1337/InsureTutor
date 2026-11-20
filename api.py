@@ -5,9 +5,11 @@ Run from the repository root:
 """
 
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import Literal
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.staticfiles import StaticFiles
 from openai import OpenAI, OpenAIError
 from pydantic import BaseModel, Field
 
@@ -95,3 +97,10 @@ def chat(body: ChatRequest, request: Request):
             for passage in passages
         ],
     )
+
+
+# Vite serves the page during local development. The Docker image includes the
+# production build, which FastAPI serves alongside /api/chat on one port.
+frontend_dist = Path(__file__).resolve().parent / "frontend" / "dist"
+if frontend_dist.is_dir():
+    app.mount("/", StaticFiles(directory=frontend_dist, html=True), name="frontend")

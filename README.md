@@ -114,3 +114,23 @@ The response has `answer` and `sources`; each source has the PDF filename, PDF
 page numbers, and chunk ID. The page labels these as retrieved passages because
 claim-level citations have not been verified yet. A failed request leaves the
 question in the text box for retry.
+
+## Run the complete app with Docker
+
+Put the evaluator's `LLM_BASE_URL`, `LLM_API_KEY`, and `LLM_MODEL` in the
+repository-root `.env` (copy `.env.example` if you need a template). Then run:
+
+```bash
+docker compose up --build
+```
+
+Open `http://localhost:8000`. The Docker build compiles the React page and
+downloads the pinned Harrier model. The first build needs internet access and
+can take several minutes. Later container starts use the model bundled in the
+image; answering questions still needs access to the configured LLM provider.
+Compose passes `.env` into the running container, while `.dockerignore` keeps
+it out of the image. Stop the app with Ctrl+C, then run `docker compose down`
+if needed. Stop any local API already using port 8000 before starting Compose.
+
+The Docker version serves the page and API from FastAPI on one port. The
+two-terminal Vite setup above remains useful while editing the frontend.
