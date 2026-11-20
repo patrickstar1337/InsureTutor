@@ -60,3 +60,38 @@ and the retrieved sources. These sources are for inspection; this first version
 does not yet verify that each answer claim is supported by a citation. The
 grounding instruction asks the model to say when the excerpts are insufficient,
 but that behavior still needs to be tested against unsupported questions.
+
+## Web chat demo
+
+Install the backend and frontend dependencies once:
+
+```bash
+.venv/bin/python -m pip install -r requirements.txt
+cd frontend && npm ci
+```
+
+Make sure the repository-root `.env` contains your `LLM_BASE_URL`,
+`LLM_API_KEY`, and `LLM_MODEL`. Start the API from the repository root in one
+terminal:
+
+```bash
+.venv/bin/python -m uvicorn api:app --host 127.0.0.1 --port 8000
+```
+
+In a second terminal, start the React page:
+
+```bash
+cd frontend
+npm run dev
+```
+
+Open the local URL printed by Vite (usually `http://localhost:5173`). Vite
+proxies `/api` to FastAPI, so the browser never receives the LLM API key.
+FastAPI loads the Harrier model and saved index once at startup.
+
+The page calls `POST /api/chat` with `{"question": "..."}`. The response has
+`answer` and `sources`; each source has the PDF filename, PDF page numbers, and
+chunk ID. The page shows previous messages, but each request is still answered
+independently. It labels the source list as retrieved passages because claim-level
+citations have not been verified yet. A failed request leaves the question in
+the text box for retry.
